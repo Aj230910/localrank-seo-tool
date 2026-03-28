@@ -1,11 +1,176 @@
-# LocalRank SEO Analyzer
+#  LocalRank — Local SEO Ranking Analyzer
 
-A modern SaaS dashboard for local SEO insights.
+LocalRank is a **full-stack SEO analytics tool** that analyzes Google Maps local search rankings for businesses.
+It helps understand **local competition, ratings, reviews, and SEO strength** for any search keyword.
 
-**Live App**: [https://localrank-seo-tool.vercel.app/](https://localrank-seo-tool.vercel.app/)
+Built with **React, Node.js, Google Places API, and Google Maps**.
 
-## Getting Started
+---
 
-1. Clone the repository
-2. Run backend: `cd backend && npm install && npm start` (requires `PORT=5000` and `GOOGLE_API_KEY` in `backend/.env`)
-3. Run frontend: `cd frontend && npm install && npm start` (requires `REACT_APP_MAP_KEY` in `frontend/.env`)
+## 🌍 Live Demo
+
+Frontend (Vercel)
+https://your-vercel-link.vercel.app
+
+Backend API (Render)
+https://localrank-seo-tool.onrender.com
+
+---
+
+##  Features
+
+*  **Keyword Search**
+
+  * Analyze local business rankings for any keyword
+  * Example: `best gym in chennai`
+
+*  **SEO Ranking Table**
+
+  * Rank
+  * Business Name
+  * Address
+  * Rating
+  * Reviews
+  * SEO Score
+
+*  **Interactive Map**
+
+  * Click any business to view location on map
+
+*  **SEO Score Algorithm**
+
+  * Calculates SEO competitiveness based on:
+  * Google rating
+  * Number of reviews
+
+*  **Real-Time Data**
+
+  * Fetches business data from Google Places API
+
+---
+
+##  Architecture
+
+User Search
+↓
+React Frontend (Vercel)
+↓
+Node.js API (Render)
+↓
+Google Places API
+↓
+Results + Map Visualization
+
+---
+
+## 🛠️ Tech Stack
+
+Frontend
+
+* React.js
+* Axios
+* Google Maps API
+
+Backend
+
+* Node.js
+* Express.js
+* Google Places API
+
+Deployment
+
+* Vercel (Frontend)
+* Render (Backend)
+
+Tools
+
+* Git
+* VS Code
+* Figma
+
+---
+
+##  Project Structure
+
+```
+localrank-seo-tool
+│
+├── backend
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── frontend
+│   ├── src
+│   ├── public
+│   └── package.json
+│
+└── README.md
+```
+
+---
+
+##  Installation
+
+Clone the repository
+
+```
+git clone https://github.com/Aj230910/localrank-seo-tool.git
+cd localrank-seo-tool
+```
+
+Install backend dependencies
+
+```
+cd backend
+npm install
+```
+
+Run backend
+
+```
+node server.js
+```
+
+Install frontend dependencies
+
+```
+cd ../frontend
+npm install
+```
+
+Run frontend
+
+```
+npm start
+```
+
+---
+
+##  Environment Variables
+
+Backend `.env`
+
+```
+GOOGLE_API_KEY=your_google_places_api_key
+```
+
+Frontend `.env`
+
+```
+REACT_APP_MAP_KEY=your_google_maps_api_key
+```
+
+
+---
+
+## 👨‍💻 Author
+
+**Ambrish Jeyan T**
+
+LinkedIn
+https://www.linkedin.com/in/ambrish-jeyan-t/
+
+---
+
+⭐ If you found this project useful, consider giving it a **star**!
