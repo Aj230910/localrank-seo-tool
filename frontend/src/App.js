@@ -116,7 +116,7 @@ function App() {
     setSelectedLocation(null);
     setActiveIndex(null);
 
-    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const apiUrl = process.env.REACT_APP_API_URL || "https://localrank-seo-tool.onrender.com";
     
     const res = await axios.get(
       `${apiUrl}/search?keyword=${keyword}`
