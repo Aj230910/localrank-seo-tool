@@ -236,11 +236,12 @@ function App() {
                 {loading ? (
                   <SkeletonLoader />
                 ) : results.length > 0 ? (
-                  <table className="results-table" id="results-table">
-                    <thead>
-                      <tr>
-                        <th>Rank</th>
-                        <th>Business</th>
+                  <div className="table-responsive">
+                    <table className="results-table" id="results-table">
+                      <thead>
+                        <tr>
+                          <th>Rank</th>
+                          <th>Business</th>
                         <th>Rating</th>
                         <th>Reviews</th>
                         <th>SEO Score</th>
@@ -298,6 +299,7 @@ function App() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 ) : (
                   <div className="empty-state">
                     <div className="empty-state-icon">📊</div>
