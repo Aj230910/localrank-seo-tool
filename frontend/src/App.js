@@ -345,8 +345,17 @@ function App() {
                         streetViewControl: false,
                         fullscreenControl: true,
                         styles: [
-                          { featureType: "poi", stylers: [{ visibility: "simplified" }] },
-                          { featureType: "water", stylers: [{ color: "#d4e8f7" }] }
+                          { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                          { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                          { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                          { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
+                          { featureType: "poi", stylers: [{ visibility: "off" }] },
+                          { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
+                          { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
+                          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
+                          { featureType: "water", elementType: "geometry", stylers: [{ color: "#09090b" }] },
+                          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
+                          { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] }
                         ]
                       }}
                     >
