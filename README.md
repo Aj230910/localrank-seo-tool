@@ -9,11 +9,8 @@ Built with **React, Node.js, Google Places API, and Google Maps**.
 
 ## 🌍 Live Demo
 
-Frontend (Vercel)
 https://your-vercel-link.vercel.app
 
-Backend API (Render)
-https://localrank-seo-tool.onrender.com
 
 ---
 
