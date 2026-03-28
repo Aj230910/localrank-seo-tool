@@ -116,8 +116,10 @@ function App() {
     setSelectedLocation(null);
     setActiveIndex(null);
 
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    
     const res = await axios.get(
-      `http://localhost:5000/search?keyword=${keyword}`
+      `${apiUrl}/search?keyword=${keyword}`
     );
 
     setResults(res.data.results);
