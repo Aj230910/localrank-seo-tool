@@ -161,7 +161,7 @@ REACT_APP_MAP_KEY=your_google_maps_api_key
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Ambrish Jeyan T**
 
@@ -170,4 +170,4 @@ https://www.linkedin.com/in/ambrish-jeyan-t/
 
 ---
 
-⭐ If you found this project useful, consider giving it a **star**!
+
