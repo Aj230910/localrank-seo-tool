@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, ExternalLink, Loader2, BarChart2, Map as MapIcon, Target, SearchIcon, ArrowRight, Lightbulb } from "lucide-react";
+import { Search, MapPin, ExternalLink, Loader2, BarChart2, Map as MapIcon, Target, SearchIcon, Lightbulb } from "lucide-react";
 import "./App.css";
 
 /* ===== STAR RATING COMPONENT ===== */
