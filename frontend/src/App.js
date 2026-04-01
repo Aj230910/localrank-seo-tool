@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, ExternalLink, Loader2, BarChart2, Map as MapIcon, Target, SearchIcon, Lightbulb } from "lucide-react";
+import { Search, MapPin, ExternalLink, Loader2, BarChart2, Map as MapIcon, Target, SearchIcon, Lightbulb, Star, Users, Award, Sun, Moon } from "lucide-react";
 import "./App.css";
 
 /* ===== STAR RATING COMPONENT ===== */
@@ -67,6 +67,124 @@ function SkeletonLoader() {
   );
 }
 
+/* ===== STATS BAR ===== */
+function StatsBar({ results }) {
+  const avgRating = results.length > 0
+    ? (results.reduce((sum, r) => sum + r.rating, 0) / results.length).toFixed(1)
+    : "–";
+  
+  const totalReviews = results.length > 0
+    ? results.reduce((sum, r) => sum + r.reviews, 0).toLocaleString()
+    : "–";
+  
+  const avgScore = results.length > 0
+    ? Math.round(results.reduce((sum, r) => sum + r.seoScore, 0) / results.length)
+    : "–";
+
+  const stats = [
+    { icon: <BarChart2 size={20} />, label: "Total Results", value: results.length, iconClass: "icon-primary" },
+    { icon: <Star size={20} />, label: "Avg Rating", value: avgRating, iconClass: "icon-amber" },
+    { icon: <Users size={20} />, label: "Total Reviews", value: totalReviews, iconClass: "icon-cyan" },
+    { icon: <Award size={20} />, label: "Avg SEO Score", value: avgScore, iconClass: "icon-green" },
+  ];
+
+  return (
+    <motion.div 
+      className="stats-bar"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      {stats.map((stat, i) => (
+        <motion.div
+          key={stat.label}
+          className="stat-card"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
+        >
+          <div className={`stat-icon ${stat.iconClass}`}>
+            {stat.icon}
+          </div>
+          <div className="stat-content">
+            <span className="stat-label">{stat.label}</span>
+            <span className="stat-value">{stat.value}</span>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
+/* ===== THEME TOGGLE BUTTON ===== */
+function ThemeToggle({ theme, toggleTheme }) {
+  return (
+    <motion.button
+      className="theme-toggle"
+      onClick={toggleTheme}
+      whileTap={{ scale: 0.9 }}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+    >
+      <AnimatePresence mode="wait">
+        {theme === "dark" ? (
+          <motion.div
+            key="sun"
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: 90, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Sun size={18} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="moon"
+            initial={{ rotate: 90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: -90, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Moon size={18} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
+}
+
+/* ===== GOOGLE MAP STYLES ===== */
+const darkMapStyles = [
+  { elementType: "geometry", stylers: [{ color: "#0c0c14" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#0c0c14" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#5e5e78" }] },
+  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#a78bfa" }] },
+  { featureType: "poi", stylers: [{ visibility: "off" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#1a1a2e" }] },
+  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#0f0f1a" }] },
+  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#5e5e78" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#1e1e35" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#06060a" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3e3e54" }] },
+  { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#0c0c14" }] },
+  { featureType: "transit", stylers: [{ visibility: "off" }] }
+];
+
+const lightMapStyles = [
+  { elementType: "geometry", stylers: [{ color: "#f5f5f5" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#f5f5f5" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#616161" }] },
+  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#4f46e5" }] },
+  { featureType: "poi", stylers: [{ visibility: "off" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
+  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#e0e0e0" }] },
+  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#dadada" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#c9d6ff" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#9e9e9e" }] },
+  { featureType: "transit", stylers: [{ visibility: "off" }] }
+];
+
 /* ===== MAIN APP ===== */
 function App() {
 
@@ -76,6 +194,22 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+
+  // Theme state — persisted to localStorage
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("localrank-theme");
+    if (saved) return saved;
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("localrank-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === "dark" ? "light" : "dark");
+  }, []);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_MAP_KEY
@@ -128,13 +262,13 @@ function App() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.08
       }
     }
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", flexDirection: "column", overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", flexDirection: "column", overflowX: "hidden", transition: "background 350ms ease" }}>
 
       {/* ===== NAVBAR ===== */}
       <motion.nav 
@@ -149,7 +283,7 @@ function App() {
             whileHover={{ rotate: 15 }}
             className="navbar-logo"
           >
-            <MapPin size={22} color="white" />
+            <MapPin size={20} color="white" />
           </motion.div>
           <div>
             <div className="navbar-title">Local<span>Rank</span></div>
@@ -171,6 +305,7 @@ function App() {
               </motion.div>
             )}
           </AnimatePresence>
+          <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
         </div>
       </motion.nav>
 
@@ -214,8 +349,8 @@ function App() {
               onKeyDown={handleKeyDown}
             />
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
               id="search-btn"
               onClick={search}
               className={`search-btn ${loading ? "loading" : ""}`}
@@ -232,7 +367,7 @@ function App() {
             animate="visible"
             className="search-tags"
           >
-            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--text-tertiary)", fontWeight: 500 }}>Trending:</span>
+            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" }}>Trending:</span>
             {quickSearches.map((q, idx) => (
               <motion.span
                 variants={fadeIn}
@@ -262,6 +397,9 @@ function App() {
             className="main-content flex-grow" 
             id="results-section"
           >
+            {/* Stats Bar */}
+            {results.length > 0 && <StatsBar results={results} />}
+
             <div className="dashboard-grid">
 
               {/* ===== TABLE PANEL ===== */}
@@ -271,6 +409,15 @@ function App() {
                     <BarChart2 size={20} className="text-primary" />
                     Ranking Results
                   </h2>
+                  {results.length > 0 && (
+                    <motion.span 
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="results-count-badge"
+                    >
+                      {results.length} businesses
+                    </motion.span>
+                  )}
                 </div>
 
                 <div className="results-card glass-panel">
@@ -295,7 +442,7 @@ function App() {
                               <motion.tr
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.05, duration: 0.3 }}
+                                transition={{ delay: index * 0.04, duration: 0.3 }}
                                 key={index}
                                 onClick={() => handleRowClick(place, index)}
                                 className={`${activeIndex === index ? "active-row" : ""} ${index === 0 ? "top-rank" : ""}`}
@@ -340,7 +487,7 @@ function App() {
                                     className="map-link"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <ExternalLink size={14} />
+                                    <ExternalLink size={13} />
                                     View
                                   </motion.a>
                                 </td>
@@ -357,7 +504,7 @@ function App() {
                       className="empty-state"
                     >
                       <div className="empty-state-icon">
-                        <SearchIcon size={32} className="text-secondary" />
+                        <SearchIcon size={28} className="text-tertiary" />
                       </div>
                       <div className="empty-state-title">No results found</div>
                       <div className="empty-state-text">
@@ -385,7 +532,7 @@ function App() {
 
                 <div className="map-card glass-panel">
                   <div className="map-card-header">
-                    <MapPin size={16} className="text-secondary" />
+                    <MapPin size={15} className="text-tertiary" />
                     <span className="map-card-title">
                       {selectedLocation ? "Viewing spot on map" : "Select a business to reveal"}
                     </span>
@@ -397,14 +544,14 @@ function App() {
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.5 }}
                       className="map-container" 
-                      key={`${selectedLocation.lat}-${selectedLocation.lng}`}
+                      key={`${selectedLocation.lat}-${selectedLocation.lng}-${theme}`}
                     >
                       <GoogleMap
                         zoom={14}
                         center={selectedLocation}
                         mapContainerStyle={{
                           width: "100%",
-                          height: "380px"
+                          height: "440px"
                         }}
                         options={{
                           disableDefaultUI: false,
@@ -412,19 +559,7 @@ function App() {
                           mapTypeControl: false,
                           streetViewControl: false,
                           fullscreenControl: true,
-                          styles: [
-                            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                            { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                            { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] },
-                            { featureType: "poi", stylers: [{ visibility: "off" }] },
-                            { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] },
-                            { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] },
-                            { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] },
-                            { featureType: "water", elementType: "geometry", stylers: [{ color: "#09090b" }] },
-                            { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] },
-                            { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] }
-                          ]
+                          styles: theme === "dark" ? darkMapStyles : lightMapStyles
                         }}
                       >
                         <Marker position={selectedLocation} />
@@ -433,7 +568,7 @@ function App() {
                   ) : (
                     <div className="map-placeholder">
                       <div className="map-placeholder-icon">
-                        <MapIcon size={28} className="text-tertiary" />
+                        <MapIcon size={24} className="text-tertiary" />
                       </div>
                       <div className="map-placeholder-text">Waiting for selection...</div>
                       <div className="map-placeholder-sub">
@@ -463,7 +598,13 @@ function App() {
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">
-        <p>LocalRank SEO Analyzer · Crafted for high-end local business insights</p>
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <MapPin size={12} />
+            LocalRank SEO Analyzer
+          </div>
+          <p>Crafted for high-end local business insights</p>
+        </div>
       </footer>
 
     </div>
