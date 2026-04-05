@@ -153,6 +153,41 @@ function ThemeToggle({ theme, toggleTheme }) {
   );
 }
 
+/* ===== BACKGROUND ANIMATIONS ===== */
+function BackgroundAnimation() {
+  return (
+    <div className="background-animation">
+      <motion.div 
+        className="floating-orb orb-1"
+        animate={{
+          x: [0, 80, 0],
+          y: [0, 40, -40, 0],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div 
+        className="floating-orb orb-2"
+        animate={{
+          x: [0, -60, 0],
+          y: [0, -50, 30, 0],
+          scale: [1, 1.2, 0.9, 1],
+        }}
+        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div 
+        className="floating-orb orb-3"
+        animate={{
+          x: [0, 50, -30, 0],
+          y: [0, 60, -20, 0],
+          scale: [1, 1.1, 1.2, 1],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      />
+    </div>
+  );
+}
+
 /* ===== GOOGLE MAP STYLES ===== */
 const darkMapStyles = [
   { elementType: "geometry", stylers: [{ color: "#0c0c14" }] },
@@ -242,6 +277,11 @@ function App() {
   const handleRowClick = (place, index) => {
     setSelectedLocation(place.location);
     setActiveIndex(index);
+    if (window.innerWidth <= 1100) {
+      setTimeout(() => {
+        document.getElementById("map-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
   };
 
   const quickSearches = [
@@ -269,6 +309,7 @@ function App() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", flexDirection: "column", overflowX: "hidden", transition: "background 350ms ease" }}>
+      <BackgroundAnimation />
 
       {/* ===== NAVBAR ===== */}
       <motion.nav 
@@ -357,7 +398,7 @@ function App() {
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin" size={18} /> : <Search size={18} />}
-              {loading ? "Analyzing..." : "Analyze"}
+              <span className="search-btn-text">{loading ? "Analyzing..." : "Analyze"}</span>
             </motion.button>
           </motion.div>
 
@@ -447,7 +488,7 @@ function App() {
                                 onClick={() => handleRowClick(place, index)}
                                 className={`${activeIndex === index ? "active-row" : ""} ${index === 0 ? "top-rank" : ""}`}
                               >
-                                <td>
+                                <td data-label="Rank">
                                   <motion.span 
                                     whileHover={{ scale: 1.1 }}
                                     className={"rank-badge " + (index < 3 ? "rank-" + (index + 1) : "")}
@@ -455,7 +496,7 @@ function App() {
                                     {place.rank}
                                   </motion.span>
                                 </td>
-                                <td>
+                                <td data-label="Business">
                                   <div className="business-info">
                                     <span className="business-name">{place.name}</span>
                                     <span className="business-address" title={place.address}>
@@ -463,21 +504,21 @@ function App() {
                                     </span>
                                   </div>
                                 </td>
-                                <td>
+                                <td data-label="Rating">
                                   <div className="rating-cell">
                                     <StarRating rating={place.rating} />
                                     <span className="rating-number">{place.rating}</span>
                                   </div>
                                 </td>
-                                <td>
+                                <td data-label="Reviews">
                                   <span className="reviews-count">
                                     {place.reviews.toLocaleString()}
                                   </span>
                                 </td>
-                                <td>
+                                <td data-label="SEO Score">
                                   <SeoBadge score={place.seoScore} />
                                 </td>
-                                <td>
+                                <td data-label="Action">
                                   <motion.a
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
@@ -516,7 +557,7 @@ function App() {
               </div>
 
               {/* ===== MAP PANEL ===== */}
-              <div className="map-panel">
+              <div className="map-panel" id="map-section">
                 <div className="panel-header">
                   <h2 className="panel-title">
                     <MapIcon size={20} className="text-primary"/> Business Location
